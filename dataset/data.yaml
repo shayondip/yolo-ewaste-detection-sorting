@@ -1,0 +1,14 @@
+# Generated from configs/config.yaml by:  python scripts/prepare_dataset.py write-yaml
+# Do not edit class names by hand - edit configs/config.yaml and regenerate.
+path: .
+train: images/train
+val: images/val
+test: images/test
+nc: 6
+names:
+  0: battery
+  1: mobile_phone
+  2: pcb
+  3: cable
+  4: plastic
+  5: metal

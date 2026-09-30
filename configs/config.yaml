@@ -1,0 +1,116 @@
+# =============================================================================
+# Central configuration - the SINGLE source of truth for the whole project.
+# Nothing below is hard-coded in Python. Relative paths are resolved against the
+# repository root, so the project works the same on Windows and Linux.
+# =============================================================================
+
+project:
+  name: yolo-ewaste-detection-sorting
+  disclaimer: >-
+    Vision-based prototype / simulation. Sorting decisions are software outputs only;
+    no physical sorting hardware is controlled and this is not an industrial system.
+
+model:
+  # Pretrained detection checkpoint used as the transfer-learning starting point.
+  # Auto-downloaded by Ultralytics on first use. Any Ultralytics detection weights
+  # work here (e.g. yolo11n.pt, yolo11s.pt, yolov8n.pt) - check the Ultralytics docs
+  # for the current recommended release.
+  weights: yolo11n.pt
+  # Where train.py leaves the best fine-tuned checkpoint (used by predict/track/app).
+  trained_weights: outputs/train/ewaste/weights/best.pt
+
+dataset:
+  root: dataset
+  data_yaml: dataset/data.yaml
+  splits:                      # relative to dataset.root
+    train: images/train
+    val: images/val
+    test: images/test
+
+training:
+  imgsz: 640
+  batch: 16                    # -1 = Ultralytics auto-batch (GPU only)
+  epochs: 100
+  lr0: 0.01                    # initial learning rate
+  lrf: 0.01                    # final LR fraction (lr0 * lrf)
+  patience: 20                 # early-stopping patience (epochs)
+  workers: 4
+  device: auto                 # auto | cpu | 0 | 0,1 | mps
+  seed: 42
+  project_dir: outputs/train
+  run_name: ewaste
+  exist_ok: true               # overwrite outputs/train/<run_name> instead of creating <run_name>2
+
+inference:
+  conf: 0.25                   # YOLO confidence floor (detections below are never produced)
+  iou: 0.45                    # NMS IoU threshold
+  imgsz: 640
+  device: auto
+  max_det: 100
+  output_dir: outputs/predictions
+
+tracking:
+  tracker: bytetrack.yaml      # bytetrack.yaml | botsort.yaml (shipped with Ultralytics)
+  output_dir: outputs/predictions
+
+evaluation:
+  split: test                  # split used by src/evaluate.py
+  batch: 16
+  conf: 0.001                  # low conf floor is standard for mAP computation
+  iou: 0.6
+  output_dir: outputs/metrics
+  visualization_dir: outputs/visualizations
+  val_project_dir: outputs/val
+  num_examples: 12             # annotated example images saved by evaluate.py
+
+sorting:
+  # Used for classes that do not define their own min_confidence below.
+  default_min_confidence: 0.35
+  decision_prefix: SEND_TO_    # decision = prefix + category destination
+  rejected_decision: NO_ACTION_LOW_CONFIDENCE
+
+# Recycling categories and where items of that category are sent (simulated bins).
+categories:
+  hazardous_electronic:
+    destination: HAZARDOUS_ELECTRONIC_BIN
+    description: Items with hazardous content (e.g. lithium cells) needing special handling.
+  electronic_device:
+    destination: ELECTRONIC_DEVICE_BIN
+    description: Complete devices for refurbishment or dismantling.
+  electronic_component:
+    destination: ELECTRONIC_COMPONENT_BIN
+    description: Boards/components for precious-metal and component recovery.
+  recyclable_electronic:
+    destination: RECYCLABLE_ELECTRONIC_BIN
+    description: Cables and similar items for copper/plastic recovery.
+  plastic_recycling:
+    destination: PLASTIC_RECYCLING_BIN
+    description: Plastic casings and parts.
+  metal_recycling:
+    destination: METAL_RECYCLING_BIN
+    description: Metal parts and scrap.
+
+# Class order defines the YOLO class ID (0, 1, 2, ...). To add a class: append an
+# entry here (and, if needed, a new category above), then run
+#   python scripts/prepare_dataset.py write-yaml
+# so dataset/data.yaml stays in sync. No Python changes are required.
+classes:
+  - name: battery
+    category: hazardous_electronic
+    color: [230, 57, 70]       # RGB used for drawing
+    min_confidence: 0.40       # stricter: hazardous items
+  - name: mobile_phone
+    category: electronic_device
+    color: [29, 53, 87]
+  - name: pcb
+    category: electronic_component
+    color: [42, 157, 143]
+  - name: cable
+    category: recyclable_electronic
+    color: [244, 162, 97]
+  - name: plastic
+    category: plastic_recycling
+    color: [69, 123, 157]
+  - name: metal
+    category: metal_recycling
+    color: [131, 56, 236]

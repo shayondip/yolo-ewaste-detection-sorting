@@ -1,0 +1,17 @@
+# --- Core ---
+# Ultralytics pulls in PyTorch + torchvision. For a specific CUDA build, install
+# PyTorch FIRST from https://pytorch.org/get-started/locally/ and then run
+# `pip install -r requirements.txt`. CPU-only machines can just use this file.
+ultralytics>=8.3.0
+opencv-python>=4.8
+numpy>=1.24
+pandas>=2.0
+matplotlib>=3.9
+pyyaml>=6.0
+Pillow>=10.0
+
+# --- Dashboard ---
+streamlit>=1.35
+
+# --- Testing ---
+pytest>=8.0

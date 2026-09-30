@@ -1,0 +1,72 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+secrets/
+
+# Datasets (never commit data; keep folder skeleton only)
+dataset/images/*/*
+dataset/labels/*/*
+!dataset/images/*/.gitkeep
+!dataset/labels/*/.gitkeep
+dataset/raw/
+dataset/*.cache
+*.cache
+downloads/
+
+# Model weights and exports
+*.pt
+*.pth
+*.onnx
+*.engine
+*.torchscript
+*.tflite
+*.pb
+*.openvino_model/
+*_openvino_model/
+*.mlpackage
+models/
+
+# Ultralytics runs and generated outputs
+runs/
+wandb/
+outputs/.cache/
+outputs/train/
+outputs/val/
+outputs/predictions/*
+outputs/metrics/*
+outputs/visualizations/*
+!outputs/predictions/.gitkeep
+!outputs/metrics/.gitkeep
+!outputs/visualizations/.gitkeep
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.log
+
+# IDE / OS
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db

@@ -1,0 +1,22 @@
+# Maps class names of an EXTERNAL dataset onto this project's target classes.
+# Used by:  python scripts/prepare_dataset.py convert-yolo --mapping <this file> ...
+#
+#   <source class name (case-insensitive)>: <target class from configs/config.yaml>
+#   <source class name>: null            # drop this class (its boxes are removed)
+#
+# Source names not listed here are DROPPED (with a warning) unless you pass --keep-unmapped-error.
+# Edit this to match the class list you see in the dataset's own data.yaml.
+battery: battery
+batteries: battery
+phone: mobile_phone
+mobile: mobile_phone
+mobile_phone: mobile_phone
+smartphone: mobile_phone
+pcb: pcb
+circuit_board: pcb
+cable: cable
+wire: cable
+# Examples of dropping classes that are not part of the target taxonomy:
+bulb: null
+keyboard: null
+mouse: null
